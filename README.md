@@ -86,7 +86,7 @@ Give Kibana a few seconds to initialize, then access the Kibana web UI by hittin
 [http://localhost:5601](http://localhost:5601) with a web browser.
 
 By default, the stack exposes the following ports:
-* 5000: Logstash TCP input.
+* 5001: Logstash TCP input.
 * 9200: Elasticsearch HTTP
 * 9300: Elasticsearch TCP transport
 * 5601: Kibana
@@ -100,7 +100,7 @@ Now that the stack is running, you will want to inject some log entries. The shi
 to send content via TCP:
 
 ```console
-$ nc localhost 5000 < /path/to/logfile.log
+$ nc localhost 5001 < /path/to/logfile.log
 ```
 
 ## Initial setup
@@ -150,6 +150,14 @@ It is also possible to map the entire `config` directory instead of a single fil
 Logstash will be expecting a
 [`log4j2.properties`](https://github.com/elastic/logstash-docker/tree/master/build/logstash/config) file for its own
 logging.
+
+### config proxy_pass in nginx
+```nginx.conf
+        location /kibana {
+            proxy_pass http://xx.xx.xx.xx:5601/;
+            rewrite ^/kibana/(.*)$ /$1 break;
+        }
+```
 
 ### How can I tune the Elasticsearch configuration?
 
